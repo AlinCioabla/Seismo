@@ -1,6 +1,8 @@
 {
   "name": "seismo",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular",
   "id": "9e654dbb"
 }

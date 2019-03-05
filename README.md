@@ -1,6 +1,4 @@
-# Project Title
-
-Seismo
+# Seismo
 
 ## Getting Started
 

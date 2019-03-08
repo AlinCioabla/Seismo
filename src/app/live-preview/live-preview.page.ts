@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device-motion/ngx';
 import { ShakeService } from '../services/shake.service';
 import { ShakeEvent } from '../models/shake-event.model';
 
 @Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
+  selector: 'app-live-preview',
+  templateUrl: 'live-preview.page.html',
+  styleUrls: ['live-preview.page.scss']
 })
-export class Tab1Page {
+export class LivePreviewPage {
   public lastShake: ShakeEvent = new ShakeEvent(0, 0, 0, 0);
 
   constructor(private shakeService: ShakeService) {

@@ -8,8 +8,12 @@
 
 <ion-content>
   <ion-card>
-    <app-acceleration-axis-monitor-chart></app-acceleration-axis-monitor-chart>
-
+    <app-acceleration-axis-monitor-chart [axis]="AccelerationAxisModel.Axis.eX"></app-acceleration-axis-monitor-chart>
   </ion-card>
-
+  <ion-card>
+    <app-acceleration-axis-monitor-chart [axis]="AccelerationAxisModel.Axis.eY"></app-acceleration-axis-monitor-chart>
+  </ion-card>
+  <ion-card>
+    <app-acceleration-axis-monitor-chart [axis]="AccelerationAxisModel.Axis.eZ"></app-acceleration-axis-monitor-chart>
+  </ion-card>
 </ion-content>

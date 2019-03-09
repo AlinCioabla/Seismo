@@ -1,45 +1,90 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device-motion/ngx';
-
-
-
-// Must match the DeviceMotionAccelerationData members (names)
-export enum Axis {
-  eX = 'x',
-  eY = 'y',
-  eZ = 'z'
-}
+import { XAxis, YAxis } from '@progress/kendo-angular-charts';
+import { Axis } from 'src/app/axis-monitor-chart/acceleration-axis-monitor-chart.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-acceleration-axis-monitor-chart',
   templateUrl: './acceleration-axis-monitor-chart.component.html',
   styleUrls: ['./acceleration-axis-monitor-chart.component.scss'],
 })
-export class AccelerationAxisMonitorChartComponent {
-  @Input() frequency = 10;
+export class AccelerationAxisMonitorChartComponent implements OnChanges {
+
+  @Input() updateFrequency = 10;
   @Input() axis: Axis = Axis.eX;
-  @Input() maxUpdates = 500;
+  @Input() timeInterval = 5000;
+  private maxMeasurePoints = 0;
+  private deviceAccelerationWatchSub: Subscription;
+
+  public chartName = `Chart`;
+
+  public xAxisConfig: XAxis = {
+    min: 0,
+    max: this.maxMeasurePoints,
+    baseUnit: 'milliseconds',
+    name: 'Time in millisecons'
+  };
+
+  public yAxisConfig: YAxis = {
+    min: -15,
+    max: 15,
+  };
 
   public chartData = [];
 
-  constructor(private deviceMotion: DeviceMotion) {
-    for (let i = 0; i < this.maxUpdates; i++) {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.timeInterval || changes.updateFrequency || changes.axis) {
+      this.init();
+    }
+  }
+
+  init(): void {
+    this.maxMeasurePoints = this.timeInterval / this.updateFrequency;
+    this.chartName = `Chart for measuring ${this.axis} axis over ${this.timeInterval}ms`;
+    this.chartData = [];
+
+    // Init the chart with a straight line
+    for (let i = 0; i <= this.maxMeasurePoints; i++) {
       this.chartData.push([i, 0]);
     }
 
+    this.xAxisConfig = {
+      min: 0,
+      max: this.maxMeasurePoints,
+      baseUnit: 'milliseconds',
+      name: 'Time in millisecons'
+    };
+
+    this.yAxisConfig = {
+      min: -15,
+      max: 15,
+    };
+
+    if (this.deviceAccelerationWatchSub) {
+      this.deviceAccelerationWatchSub.unsubscribe();
+    }
+
     // Watch device acceleration
-    this.deviceMotion.watchAcceleration({ frequency: this.frequency })
+    this.deviceAccelerationWatchSub = this.deviceMotion.watchAcceleration({ frequency: this.updateFrequency })
       .subscribe((newAcceleration: DeviceMotionAccelerationData) => {
         this.updateChart(newAcceleration[this.axis]);
       });
   }
 
-  updateChart(newValue): void {
-    this.chartData.splice(0, 1);
-    this.chartData.map(point => point[0]--);
+  constructor(private deviceMotion: DeviceMotion) {
+    this.init();
+  }
 
-    this.chartData.push([this.maxUpdates, newValue]);
-    this.chartData = this.chartData.slice();
+  updateChart(newValue): void {
+    // Shift all the points back
+    for (const point of this.chartData) {
+      point[0]--;
+    }
+    this.chartData.push([this.maxMeasurePoints, newValue]); // Add a new point
+    this.chartData.shift(); // Remove the first point
+
+    this.chartData = this.chartData.slice();  // Update the chart reference to update the data binding
   }
 
 }

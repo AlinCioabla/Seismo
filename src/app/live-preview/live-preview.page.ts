@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 import { ShakeService } from '../services/shake.service';
 import { ShakeEvent } from '../models/shake-event.model';
 
-import * as AccelerationAxisModel from 'src/app/axis-monitor-chart/acceleration-axis-monitor-chart.model';
+import * as AccelerationAxisModel from 'src/app/components/axis-monitor-chart/acceleration-axis-monitor-chart.model';
+import { ModalController } from '@ionic/angular';
+import { SettingsModalComponent } from 'src/app/components/settings-modal/settings-modal.component';
 
 @Component({
   selector: 'app-live-preview',
@@ -12,22 +14,25 @@ import * as AccelerationAxisModel from 'src/app/axis-monitor-chart/acceleration-
 export class LivePreviewPage {
   AccelerationAxisModel = AccelerationAxisModel;
 
-  public lastShake: ShakeEvent = new ShakeEvent(0, 0, 0, 0);
+  public chartTimeInterval = 5000; // ms
+  public chartUpdateFrequency = 10;
 
-  zAcceleration = [
-    [0, -5], [1, 5], [2, 0], [3, 0],
-    [4, 0], [5, 0], [6, 0], [7, -3],
-    [8, 3], [9, 6], [10, 10], [11, 5],
-    [12, -13], [13, -3], [14, 16], [15, 1],
-    [16, 19], [17, 1], [18, 20], [19, -2],
-    [20, -18], [21, 5], [22, -12], [23, 7],
-    [24, 10], [25, -8]
-  ];
+  constructor(private shakeService: ShakeService, public modalController: ModalController) {
+  }
 
-  constructor(private shakeService: ShakeService) {
-    this.shakeService.listen().subscribe((shakeEvent: ShakeEvent) => {
-      this.lastShake = shakeEvent;
+  async onSettingsClick() {
+    const modal = await this.modalController.create({
+      component: SettingsModalComponent,
+      componentProps: {
+        chartTimeInterval: this.chartTimeInterval,
+        chartUpdateFrequency: this.chartUpdateFrequency
+      }
     });
+    await modal.present();
+    const returnedData = await modal.onDidDismiss();
+
+    this.chartTimeInterval = returnedData.data.chartTimeInterval;
+    this.chartUpdateFrequency = returnedData.data.chartUpdateFrequency;
   }
 
 }

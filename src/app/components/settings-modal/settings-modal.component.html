@@ -1,0 +1,56 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-title>Live preview settings</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen>
+  <ion-card>
+    <ion-list>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-label>Chart update frequency</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-range [(ngModel)]="chartUpdateFrequency" min="10" max="1000" step="10" pin="true">
+                <ion-label slot="start">
+                  10 ms
+                </ion-label>
+                <ion-label slot="end">
+                  10000 ms
+                </ion-label>
+              </ion-range>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-label>Chart time interval</ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-range [(ngModel)]="chartTimeInterval" min="100" max="10000" step="100" pin="true">
+                <ion-label slot="start">
+                  100 ms
+                </ion-label>
+                <ion-label slot="end">
+                  10000 ms
+                </ion-label>
+              </ion-range>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+</ion-content>

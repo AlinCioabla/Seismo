@@ -7,7 +7,8 @@ import { ChartsModule } from '@progress/kendo-angular-charts';
 
 import { LivePreviewPage } from './live-preview.page';
 
-import { AccelerationAxisMonitorChartComponent } from 'src/app/axis-monitor-chart/acceleration-axis-monitor-chart.component';
+import { AccelerationAxisMonitorChartComponent } from 'src/app/components/axis-monitor-chart/acceleration-axis-monitor-chart.component';
+import { SettingsModalComponent } from 'src/app/components/settings-modal/settings-modal.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,9 @@ import { AccelerationAxisMonitorChartComponent } from 'src/app/axis-monitor-char
     ChartsModule,
     RouterModule.forChild([{ path: '', component: LivePreviewPage }])
   ],
-  declarations: [LivePreviewPage, AccelerationAxisMonitorChartComponent]
+  declarations: [LivePreviewPage, AccelerationAxisMonitorChartComponent, SettingsModalComponent],
+  entryComponents: [
+    SettingsModalComponent
+  ]
 })
-export class LivePreviewModule {}
+export class LivePreviewModule { }

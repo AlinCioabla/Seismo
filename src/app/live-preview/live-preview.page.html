@@ -3,17 +3,27 @@
     <ion-title>
       Live preview
     </ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onSettingsClick()" fill="solid" color="primary">
+        Settings
+        <ion-icon slot="end" name="settings"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-card>
-    <app-acceleration-axis-monitor-chart [axis]="AccelerationAxisModel.Axis.eX"></app-acceleration-axis-monitor-chart>
+    <app-acceleration-axis-monitor-chart [axis]="AccelerationAxisModel.Axis.eX" [updateFrequency]="chartUpdateFrequency"
+      [timeInterval]="chartTimeInterval">
+    </app-acceleration-axis-monitor-chart>
   </ion-card>
   <ion-card>
-    <app-acceleration-axis-monitor-chart [axis]="AccelerationAxisModel.Axis.eY"></app-acceleration-axis-monitor-chart>
+    <app-acceleration-axis-monitor-chart [axis]="AccelerationAxisModel.Axis.eY" [updateFrequency]="chartUpdateFrequency"
+      [timeInterval]="chartTimeInterval"></app-acceleration-axis-monitor-chart>
   </ion-card>
   <ion-card>
-    <app-acceleration-axis-monitor-chart [axis]="AccelerationAxisModel.Axis.eZ"></app-acceleration-axis-monitor-chart>
+    <app-acceleration-axis-monitor-chart [axis]="AccelerationAxisModel.Axis.eZ" [updateFrequency]="chartUpdateFrequency"
+      [timeInterval]="chartTimeInterval"></app-acceleration-axis-monitor-chart>
   </ion-card>
 </ion-content>

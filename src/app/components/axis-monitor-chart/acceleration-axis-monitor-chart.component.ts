@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device-motion/ngx';
 import { XAxis, YAxis } from '@progress/kendo-angular-charts';
-import { Axis } from 'src/app/axis-monitor-chart/acceleration-axis-monitor-chart.model';
+import { Axis } from 'src/app/components/axis-monitor-chart/acceleration-axis-monitor-chart.model';
 import { Subscription } from 'rxjs';
 
 @Component({

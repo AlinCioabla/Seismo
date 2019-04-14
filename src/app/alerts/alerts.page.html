@@ -8,4 +8,17 @@
 
 <ion-content>
   <p>Alerts tab content</p>
+  <ion-button (click)="onConnect()" fill="solid" color="primary">
+    Connect
+    <ion-icon slot="end" name="settings"></ion-icon>
+  </ion-button>
+  <ion-button (click)="onDisconnect()" fill="solid" color="primary">
+    Disconnect
+    <ion-icon slot="end" name="settings"></ion-icon>
+  </ion-button>
+  <ion-button (click)="onSendMessage()" fill="solid" color="primary">
+    Send message
+    <ion-icon slot="end" name="settings"></ion-icon>
+  </ion-button>
+  <p>Connected: {{ this.websocketService.connected() }}</p>
 </ion-content>

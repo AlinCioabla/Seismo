@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { ShakeService } from '../services/shake.service';
-import { ShakeEvent } from '../models/shake-event.model';
 
 import * as AccelerationAxisModel from 'src/app/components/axis-monitor-chart/acceleration-axis-monitor-chart.model';
 import { ModalController } from '@ionic/angular';
@@ -17,7 +15,7 @@ export class LivePreviewPage {
   public chartTimeInterval = 5000; // ms
   public chartUpdateFrequency = 10;
 
-  constructor(private shakeService: ShakeService, public modalController: ModalController) {
+  constructor(public modalController: ModalController) {
   }
 
   async onSettingsClick() {

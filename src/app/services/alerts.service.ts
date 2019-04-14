@@ -1,13 +1,11 @@
-import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device-motion/ngx';
-import { Observable, Subject } from 'rxjs';
-import { ShakeEvent } from 'src/app/models/shake-event.model';
 import { Injectable } from '@angular/core';
+import { DeviceMotionAccelerationData } from '@ionic-native/device-motion/ngx';
 
 @Injectable()
-export class ShakeService {
+export class AlertsService {
+
   private sensitivity = 2;
-  private frequency = 100;
-  private shakeDetected = new Subject<ShakeEvent>();
+  //private shakeDetected = new Subject<ShakeEvent>();
 
   private previousAcceleration = {
     x: null,
@@ -15,16 +13,8 @@ export class ShakeService {
     z: null
   };
 
-  constructor(private deviceMotion: DeviceMotion) {
-    // Watch device acceleration
-    this.deviceMotion.watchAcceleration({ frequency: this.frequency })
-      .subscribe((newAcceleration: DeviceMotionAccelerationData) => {
-        this.onAccelerationChanged(newAcceleration);
-      });
-  }
-
-  public listen(): Observable<ShakeEvent> {
-    return this.shakeDetected.asObservable();
+  constructor() {
+ 
   }
 
   private onAccelerationChanged(newAcceleration: DeviceMotionAccelerationData) {
@@ -47,9 +37,10 @@ export class ShakeService {
     };
 
     if (accelerationChange.x + accelerationChange.y + accelerationChange.z > this.sensitivity) {
-      this.shakeDetected.next(new ShakeEvent(
-        newAcceleration.x, newAcceleration.y, newAcceleration.z, newAcceleration.timestamp
-      ));
+      // this.shakeDetected.next(new ShakeEvent(
+      //   newAcceleration.x, newAcceleration.y, newAcceleration.z, newAcceleration.timestamp
+      // ));
     }
   }
+
 }

@@ -9,7 +9,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ShakeService } from 'src/app/services/shake.service';
+import { WebsocketService } from './services/websocket.service';
+import { AlertsService } from './services/alerts.service';
 import 'hammerjs';
 
 @NgModule({
@@ -23,7 +24,8 @@ import 'hammerjs';
   providers: [
     StatusBar,
     SplashScreen,
-    ShakeService,
+    WebsocketService,
+    AlertsService,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

@@ -3,6 +3,7 @@ import { DeviceMotion, DeviceMotionAccelerationData } from '@ionic-native/device
 import { XAxis, YAxis } from '@progress/kendo-angular-charts';
 import { Axis } from 'src/app/components/axis-monitor-chart/acceleration-axis-monitor-chart.model';
 import { Subscription } from 'rxjs';
+import { AlertsService } from '../../services/alerts.service';
 
 @Component({
   selector: 'app-acceleration-axis-monitor-chart',
@@ -72,7 +73,7 @@ export class AccelerationAxisMonitorChartComponent implements OnChanges {
       });
   }
 
-  constructor(private deviceMotion: DeviceMotion) {
+  constructor(private deviceMotion: DeviceMotion, public alertService: AlertsService) {
     this.init();
   }
 
@@ -85,6 +86,8 @@ export class AccelerationAxisMonitorChartComponent implements OnChanges {
     this.chartData.shift(); // Remove the first point
 
     this.chartData = this.chartData.slice();  // Update the chart reference to update the data binding
+
+    this.alertService.onChartDataUpdated(this.axis, this.chartData, this.timeInterval, this.updateFrequency);
   }
 
 }

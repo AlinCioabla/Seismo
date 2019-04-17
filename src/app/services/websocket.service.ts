@@ -13,7 +13,7 @@ declare type WebSocketPayload = string | ArrayBuffer | Blob;
 
 @Injectable()
 export class WebsocketService {
-  private readonly kWsAddress = 'wss://echo.websocket.org';
+  private readonly kWsAddress = 'ws://127.0.0.1:80';
 
   // This subject queues as necessary to ensure every message is delivered
   private input: QueueingSubject<string> = new QueueingSubject<string>();

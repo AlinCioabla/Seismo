@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DeviceMotionAccelerationData } from '@ionic-native/device-motion/ngx';
+import { Axis } from '../components/axis-monitor-chart/acceleration-axis-monitor-chart.model';
+import { WebsocketService } from './websocket.service';
+import { WsMessage } from '../models/ws-message.model';
 
 @Injectable()
 export class AlertsService {
@@ -13,8 +16,13 @@ export class AlertsService {
     z: null
   };
 
-  constructor() {
- 
+  constructor(public wsService: WebsocketService) {
+
+  }
+
+  public onChartDataUpdated(axis: Axis, chartData: Array<[number, number]>, timeInterval: number, updateFrequency: number) {
+    if (this.wsService.connected())
+      this.wsService.sendMessage(JSON.stringify(new WsMessage(axis, chartData, timeInterval, updateFrequency)));
   }
 
   private onAccelerationChanged(newAcceleration: DeviceMotionAccelerationData) {

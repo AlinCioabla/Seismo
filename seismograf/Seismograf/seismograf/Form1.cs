@@ -81,10 +81,13 @@ namespace seismograf
             {
                 Byte[] bytes1 = new Byte[client.Available];
                 stream.Read(bytes1, 0, bytes1.Length);
-                var b = GetDecodedData(bytes1, bytes1.Length);
-                label4.Text = b;
+
+                string decodedMessage = GetDecodedData(bytes1, bytes1.Length);
+				
+                label4.Text = decodedMessage;
             }
         }
+
         public static string GetDecodedData(byte[] buffer, int length)
         {
             byte b = buffer[1];

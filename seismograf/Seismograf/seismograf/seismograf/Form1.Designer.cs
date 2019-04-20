@@ -32,9 +32,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.angularGauge1 = new LiveCharts.WinForms.AngularGauge();
-            this.angularGauge2 = new LiveCharts.WinForms.AngularGauge();
-            this.angularGauge3 = new LiveCharts.WinForms.AngularGauge();
+            this.angularGaugeX = new LiveCharts.WinForms.AngularGauge();
+            this.angularGaugeY = new LiveCharts.WinForms.AngularGauge();
+            this.angularGaugeZ = new LiveCharts.WinForms.AngularGauge();
             this.cartesianChart1 = new LiveCharts.WinForms.CartesianChart();
             this.label4 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
@@ -70,27 +70,27 @@
             // 
             // angularGauge1
             // 
-            this.angularGauge1.Location = new System.Drawing.Point(12, 12);
-            this.angularGauge1.Name = "angularGauge1";
-            this.angularGauge1.Size = new System.Drawing.Size(207, 109);
-            this.angularGauge1.TabIndex = 3;
-            this.angularGauge1.Text = "angularGauge1";
+            this.angularGaugeX.Location = new System.Drawing.Point(12, 12);
+            this.angularGaugeX.Name = "angularGauge1";
+            this.angularGaugeX.Size = new System.Drawing.Size(207, 109);
+            this.angularGaugeX.TabIndex = 3;
+            this.angularGaugeX.Text = "angularGauge1";
             // 
             // angularGauge2
             // 
-            this.angularGauge2.Location = new System.Drawing.Point(286, 12);
-            this.angularGauge2.Name = "angularGauge2";
-            this.angularGauge2.Size = new System.Drawing.Size(207, 109);
-            this.angularGauge2.TabIndex = 4;
-            this.angularGauge2.Text = "angularGauge2";
+            this.angularGaugeY.Location = new System.Drawing.Point(286, 12);
+            this.angularGaugeY.Name = "angularGauge2";
+            this.angularGaugeY.Size = new System.Drawing.Size(207, 109);
+            this.angularGaugeY.TabIndex = 4;
+            this.angularGaugeY.Text = "angularGauge2";
             // 
             // angularGauge3
             // 
-            this.angularGauge3.Location = new System.Drawing.Point(581, 12);
-            this.angularGauge3.Name = "angularGauge3";
-            this.angularGauge3.Size = new System.Drawing.Size(207, 109);
-            this.angularGauge3.TabIndex = 5;
-            this.angularGauge3.Text = "angularGauge3";
+            this.angularGaugeZ.Location = new System.Drawing.Point(581, 12);
+            this.angularGaugeZ.Name = "angularGauge3";
+            this.angularGaugeZ.Size = new System.Drawing.Size(207, 109);
+            this.angularGaugeZ.TabIndex = 5;
+            this.angularGaugeZ.Text = "angularGauge3";
             // 
             // cartesianChart1
             // 
@@ -132,9 +132,9 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.cartesianChart1);
-            this.Controls.Add(this.angularGauge3);
-            this.Controls.Add(this.angularGauge2);
-            this.Controls.Add(this.angularGauge1);
+            this.Controls.Add(this.angularGaugeZ);
+            this.Controls.Add(this.angularGaugeY);
+            this.Controls.Add(this.angularGaugeX);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -150,9 +150,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private LiveCharts.WinForms.AngularGauge angularGauge1;
-        private LiveCharts.WinForms.AngularGauge angularGauge2;
-        private LiveCharts.WinForms.AngularGauge angularGauge3;
+        private LiveCharts.WinForms.AngularGauge angularGaugeX;
+        private LiveCharts.WinForms.AngularGauge angularGaugeY;
+        private LiveCharts.WinForms.AngularGauge angularGaugeZ;
         private LiveCharts.WinForms.CartesianChart cartesianChart1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button button1;

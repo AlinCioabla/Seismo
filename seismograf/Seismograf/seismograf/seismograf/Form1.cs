@@ -4,9 +4,34 @@ using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Text;
 using System.Net.Sockets;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using LiveCharts;
+using System.Windows.Controls;
 
 namespace seismograf
 {
+    public class Axis
+    {
+        [JsonProperty(PropertyName = "data")]
+        public double[][] data { get; set; }
+        [JsonProperty(PropertyName = "timeIntervalMs")]
+        public string timeIntervalMs { get; set; }
+        [JsonProperty(PropertyName = "updateFrequencyMs")]
+        public string updateFrequencyMs { get; set; }
+        [JsonProperty(PropertyName = "axis")]
+        public string axis { get; set; }
+    }
+
+    public class JsonObject
+    {
+        [JsonProperty(PropertyName = "type")]
+        public string typejson { get; set; }
+        [JsonProperty(PropertyName = "data")]
+        public Axis forJson { get; set; }
+
+    }
     public partial class Form1 : Form
     {
         NetworkStream stream;
@@ -19,10 +44,9 @@ namespace seismograf
         private void button1_Click(object sender, EventArgs e)
         {
             label4.Text = "Waiting for a client.";
-            TcpListener server = new TcpListener(IPAddress.Parse("127.0.0.1"), 80);
+            TcpListener server = new TcpListener(IPAddress.Parse("192.168.1.6"), 80);
 
             server.Start();
-            label4.Text = "Server has started on 127.0.0.1:80.{0}Waiting for a connection...";
 
             client = server.AcceptTcpClient();
 
@@ -74,7 +98,15 @@ namespace seismograf
             button1.Visible = false;
 
         }
-
+        private void SetPointsOnGraph(JsonObject jsObj)
+        {
+            // Asta nu e gata
+            if(jsObj.forJson.axis == "x")
+            {
+                for (int i = 0; i < jsObj.forJson.data.Length; i++)
+                        angularGaugeX.Value = (double)(jsObj.forJson.data[i][1]);
+            }
+        }
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (stream != null && stream.DataAvailable)
@@ -82,6 +114,12 @@ namespace seismograf
                 Byte[] bytes1 = new Byte[client.Available];
                 stream.Read(bytes1, 0, bytes1.Length);
                 var b = GetDecodedData(bytes1, bytes1.Length);
+                //JObject json = JObject.Parse(b);
+                var a = JsonConvert.DeserializeObject<JsonObject>(b);
+                if(a!=null)
+                {
+                    SetPointsOnGraph(a);
+                }
                 label4.Text = b;
             }
         }
@@ -125,7 +163,7 @@ namespace seismograf
                 buffer[i] = (byte)(buffer[i] ^ key[count % 4]);
                 count++;
             }
-
+            if (dataLength < 0) return "";
             return Encoding.ASCII.GetString(buffer, dataIndex, dataLength);
         }
     }

@@ -70,6 +70,7 @@
             // 
             // angularGauge1
             // 
+            this.angularGauge1.BackColorTransparent = true;
             this.angularGauge1.Location = new System.Drawing.Point(12, 12);
             this.angularGauge1.Name = "angularGauge1";
             this.angularGauge1.Size = new System.Drawing.Size(207, 109);
@@ -122,6 +123,7 @@
             // timer1
             // 
             this.timer1.Enabled = true;
+            this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Form1

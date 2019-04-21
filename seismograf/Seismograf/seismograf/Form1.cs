@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
 using seismograf.Models;
 using SuperSocket.SocketBase.Config;
 using SuperSocket.WebSocket;
@@ -13,16 +16,30 @@ namespace seismograf
     {
 	    private static WebSocketServer wsServer;
 	    delegate void UpdateNotificationsLabelCb(string text);
+        delegate void UpdateChartCb(WsMessage chartInfo);
+        ChartValues<ObservablePoint> chartValuesZ= new ChartValues<ObservablePoint>();
+        ChartValues<ObservablePoint> chartValuesY = new ChartValues<ObservablePoint>();
+        ChartValues<ObservablePoint> chartValuesX = new ChartValues<ObservablePoint>();
 
-		public Form1()
+        public Form1()
         {
             InitializeComponent();
-			wsServer = new WebSocketServer();
+            angularGauge1.FromValue = -50;
+            angularGauge1.ToValue = 50;
+            angularGauge1.AnimationsSpeed = new TimeSpan(1);
+            angularGauge2.FromValue = -50;
+            angularGauge2.ToValue = 50;
+            angularGauge2.AnimationsSpeed = new TimeSpan(1);
+            angularGauge3.FromValue = -50;
+            angularGauge3.ToValue = 50;
+            angularGauge3.AnimationsSpeed = new TimeSpan(1);
+
+            wsServer = new WebSocketServer();
 
 	        var config = new ServerConfig
 	        {
 		        Name = "SeimsoWsComm",
-		        Ip = "192.168.0.104",
+		        Ip = "192.168.1.6",
 		        Port = 80,
 				LogAllSocketException = true,
 				MaxRequestLength = 1000000
@@ -48,7 +65,7 @@ namespace seismograf
 
 		private void timer1_Tick(object sender, EventArgs e)
 		{
-
+            timer1.Stop();
 		}
 
 		private void OnSessionClosed(WebSocketSession session, CloseReason value)
@@ -61,20 +78,93 @@ namespace seismograf
 		    this.UpdateNotificationsLabel("Data received");
 		}
 
+        private void SetCartesianChart(WsMessage chartInfo)
+        {
+            //   timer1.Interval = (int)speed;
+            cartesianChart1.DisableAnimations = true;
+
+
+            {
+                if (chartInfo.data.axis == "x")
+                {
+                    chartValuesX = new ChartValues<ObservablePoint>();
+                    foreach (ObservablePoint p in chartInfo.data.data)
+                    {
+                        chartValuesX.Add(p);
+                        angularGauge1.Value = p.Y;
+                    }
+                }
+                else if (chartInfo.data.axis == "y")
+                {
+                    chartValuesY = new ChartValues<ObservablePoint>();
+                    foreach (ObservablePoint p in chartInfo.data.data)
+                    {
+                        chartValuesY.Add(p);
+                        angularGauge2.Value = p.Y;
+
+                    }
+                }
+                else
+                {
+                    chartValuesZ = new ChartValues<ObservablePoint>();
+                    foreach (ObservablePoint p in chartInfo.data.data)
+                    {
+                        chartValuesZ.Add(p);
+                        angularGauge3.Value = p.Y;
+
+                    }
+                }
+            }
+
+            //if (timer1.Enabled)
+             //   timer1.Start();
+            cartesianChart1.Series = new SeriesCollection
+                    {
+                        new LineSeries
+                        {
+                            Values = chartValuesX,
+                            PointGeometrySize =10
+                        },
+                        new LineSeries
+                        {
+                            Values = chartValuesY,
+                            PointGeometrySize =10
+                        },
+                        new LineSeries
+                        {
+                            Values = chartValuesZ,
+                            PointGeometrySize =10
+                        }
+                    };
+        }
+
 		private void OnMessageReceived(WebSocketSession session, string value)
 	    {
 		    WsMessage message = Newtonsoft.Json.JsonConvert.DeserializeObject<WsMessage>(value);
 
-			// TO DO CRACIUN: live updating charts
-			//if (message.data.axis == "x")
-			//{
-			// for (int i = 0; i < jsObj.forJson.data.Length; i++)
-			//  angularGaugeX.Value = (double)(jsObj.forJson.data[i][1]);
-			//}
+            // TO DO CRACIUN: live updating charts
+            if (message.type != "Alert")
+            {
+                if (cartesianChart1.InvokeRequired)
+                {
+                    UpdateChartCb d = new UpdateChartCb(SetCartesianChart);
+                    this.Invoke(d, new object[] { message });
+                }
+                else
+                {
+                    SetCartesianChart(message);
+                }
+            }
+            else
+            {
+                MessageBox.Show( "Don't panic!!!", "Earthquake", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
 
-			// TO DO: HANDLE ALERTS
-			// if(message.type == Alert)
-		}
+            
+
+            // TO DO: HANDLE ALERTS
+            // if(message.type == Alert)
+        }
 
 		private void OnNewSessionConnected(WebSocketSession session)
 	    {

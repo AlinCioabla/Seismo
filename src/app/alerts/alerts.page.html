@@ -7,7 +7,7 @@
 </ion-header>
 
 <ion-content>
-  <p>Alerts tab content</p>
+  <p>Initialize the connection</p>
   <ion-button (click)="onConnect()" fill="solid" color="primary">
     Connect
     <ion-icon slot="end" name="settings"></ion-icon>
@@ -16,9 +16,5 @@
     Disconnect
     <ion-icon slot="end" name="settings"></ion-icon>
   </ion-button>
-  <ion-button (click)="onSendMessage()" fill="solid" color="primary">
-    Send message
-    <ion-icon slot="end" name="settings"></ion-icon>
-  </ion-button>
-  <p>Connected: {{ this.websocketService.connected() }}</p>
+  <p>Connected: {{ this.wsService.connected() }}</p>
 </ion-content>

@@ -20,12 +20,12 @@ export class AlertsService {
 
   }
 
-  public onChartDataUpdated(axis: Axis, chartData: Array<[number, number]>, timeInterval: number, updateFrequency: number) {
-    if (this.wsService.connected()) {
-      const messageToSend = JSON.stringify(new WsMessage(axis, chartData, timeInterval, updateFrequency));
-      console.log('messageToSend');
-      this.wsService.sendMessage(messageToSend);
+  public onChartDataUpdated(axis: Axis, chartData: Array<Array<number>>, timeInterval: number, updateFrequency: number) {
+    this.previousAcceleration[axis] = chartData[chartData.length - 1][1];
 
+    if (this.wsService.connected()) {
+      const messageToSend = new WsMessage(axis, chartData, timeInterval, updateFrequency);
+      this.wsService.sendMessage(JSON.stringify(messageToSend));
     }
   }
 

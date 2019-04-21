@@ -32,7 +32,7 @@ export class AccelerationAxisMonitorChartComponent implements OnChanges {
     max: 15,
   };
 
-  public chartData = [];
+  public chartData: Array<Array<number>> = [];
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.timeInterval || changes.updateFrequency || changes.axis) {
@@ -82,6 +82,7 @@ export class AccelerationAxisMonitorChartComponent implements OnChanges {
     for (const point of this.chartData) {
       point[0]--;
     }
+
     this.chartData.push([this.maxMeasurePoints, newValue]); // Add a new point
     this.chartData.shift(); // Remove the first point
 

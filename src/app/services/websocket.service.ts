@@ -13,7 +13,7 @@ declare type WebSocketPayload = string | ArrayBuffer | Blob;
 
 @Injectable()
 export class WebsocketService {
-  private readonly kWsAddress = 'ws://192.168.43.5:80';
+  private readonly kWsAddress = 'ws://192.168.0.104:80';
 
   // This subject queues as necessary to ensure every message is delivered
   private input: QueueingSubject<string> = new QueueingSubject<string>();
@@ -29,14 +29,16 @@ export class WebsocketService {
   private isConnected = false;
 
   constructor() {
-    // Create the websocket observable, does *not* open the websocket connection
-    this.socket = makeWebSocketObservable(this.kWsAddress);
+
   }
 
   public connectWebsocket() {
     if (this.isConnected) {
       return;
     }
+    
+    // Create the websocket observable, does *not* open the websocket connection
+    this.socket = makeWebSocketObservable(this.kWsAddress);
 
     this.messages = this.socket.pipe(
       // The observable produces a value once the websocket has been opened

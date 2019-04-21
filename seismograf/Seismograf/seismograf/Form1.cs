@@ -1,137 +1,101 @@
 ﻿using System;
-using System.Net;
+using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
-using System.Text;
-using System.Net.Sockets;
+using seismograf.Models;
+using SuperSocket.SocketBase.Config;
+using SuperSocket.WebSocket;
+using SuperSocket.WebSocket.Protocol;
+using CloseReason = SuperSocket.SocketBase.CloseReason;
 
 namespace seismograf
 {
     public partial class Form1 : Form
     {
-        NetworkStream stream;
-        TcpClient client;
-        public Form1()
+	    private static WebSocketServer wsServer;
+	    delegate void UpdateNotificationsLabelCb(string text);
+
+		public Form1()
         {
             InitializeComponent();
-        }
+			wsServer = new WebSocketServer();
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            label4.Text = "Waiting for a client.";
-            TcpListener server = new TcpListener(IPAddress.Parse("192.168.43.5"), 80);
+	        var config = new ServerConfig
+	        {
+		        Name = "SeimsoWsComm",
+		        Ip = "192.168.0.104",
+		        Port = 80,
+				LogAllSocketException = true,
+				MaxRequestLength = 1000000
+	        };
 
-            server.Start();
+			wsServer.Setup(config);
 
-            client = server.AcceptTcpClient();
+	        wsServer.NewSessionConnected += OnNewSessionConnected;
+	        wsServer.NewMessageReceived += OnMessageReceived;
+	        wsServer.NewDataReceived += OnNewDataReceived;
+			wsServer.SessionClosed += OnSessionClosed;
 
-            label4.Text = "A client connected.";
+	        wsServer.Start();
+	        this.UpdateNotificationsLabel("Server started");
+		}
 
-            stream = client.GetStream();
 
-            //enter to an infinite cycle to be able to handle every change in stream
 
-            while (client.Available < 3)
-            {
-                // wait for enough bytes to be available
-            }
+	    private void button1_Click(object sender, EventArgs e)
+	    {
 
-            Byte[] bytes = new Byte[client.Available];
+	    }
 
-            stream.Read(bytes, 0, bytes.Length);
+		private void timer1_Tick(object sender, EventArgs e)
+		{
 
-            //translate bytes of request to string
-            String data = Encoding.UTF8.GetString(bytes);
+		}
 
-            if (Regex.IsMatch(data, "^GET"))
-            {
+		private void OnSessionClosed(WebSocketSession session, CloseReason value)
+	    {
+		    this.UpdateNotificationsLabel("Client disconnected");
+		}
 
-            }
-            else
-            {
+		private void OnNewDataReceived(WebSocketSession session, byte[] value)
+	    {
+		    this.UpdateNotificationsLabel("Data received");
+		}
 
-            }
+		private void OnMessageReceived(WebSocketSession session, string value)
+	    {
+		    WsMessage message = Newtonsoft.Json.JsonConvert.DeserializeObject<WsMessage>(value);
 
-            if (new System.Text.RegularExpressions.Regex("^GET").IsMatch(data))
-            {
-                const string eol = "\r\n"; // HTTP/1.1 defines the sequence CR LF as the end-of-line marker
+			// TO DO CRACIUN: live updating charts
+			//if (message.data.axis == "x")
+			//{
+			// for (int i = 0; i < jsObj.forJson.data.Length; i++)
+			//  angularGaugeX.Value = (double)(jsObj.forJson.data[i][1]);
+			//}
 
-                Byte[] response = Encoding.UTF8.GetBytes("HTTP/1.1 101 Switching Protocols" + eol
-                    + "Connection: Upgrade" + eol
-                    + "Upgrade: websocket" + eol
-                    + "Sec-WebSocket-Accept: " + Convert.ToBase64String(
-                        System.Security.Cryptography.SHA1.Create().ComputeHash(
-                            Encoding.UTF8.GetBytes(
-                                new System.Text.RegularExpressions.Regex("Sec-WebSocket-Key: (.*)").Match(data).Groups[1].Value.Trim() + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
-                            )
-                        )
-                    ) + eol
-                    + eol);
+			// TO DO: HANDLE ALERTS
+			// if(message.type == Alert)
+		}
 
-                stream.Write(response, 0, response.Length);
-            }
-            button1.Visible = false;
+		private void OnNewSessionConnected(WebSocketSession session)
+	    {
+		    this.UpdateNotificationsLabel("Client connected");
+	    }
 
-        }
+	    private void UpdateNotificationsLabel(string text)
+	    {
+		    // InvokeRequired required compares the thread ID of the
+		    // calling thread to the thread ID of the creating thread.
+		    // If these threads are different, it returns true.
+		    if (this.label4.InvokeRequired)
+		    {
+			    UpdateNotificationsLabelCb d = new UpdateNotificationsLabelCb(UpdateNotificationsLabel);
+			    this.Invoke(d, new object[] { text });
+		    }
+		    else
+		    {
+			    this.label4.Text = text;
+		    }
+		}
 
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            if (stream != null && stream.DataAvailable)
-            {
-                Byte[] bytes1 = new Byte[client.Available];
-                stream.Read(bytes1, 0, bytes1.Length);
-
-                string decodedMessage = GetDecodedData(bytes1, bytes1.Length);
-				
-                label4.Text = decodedMessage;
-            }
-        }
-
-        public static string GetDecodedData(byte[] buffer, int length)
-        {
-            byte b = buffer[1];
-            int dataLength = 0;
-            int totalLength = 0;
-            int keyIndex = 0;
-
-            if (b - 128 <= 125)
-            {
-                dataLength = b - 128;
-                keyIndex = 2;
-                totalLength = dataLength + 6;
-            }
-
-            if (b - 128 == 126)
-            {
-                dataLength = BitConverter.ToInt16(new byte[] { buffer[3], buffer[2] }, 0);
-                keyIndex = 4;
-                totalLength = dataLength + 8;
-            }
-
-            if (b - 128 == 127)
-            {
-                dataLength = (int)BitConverter.ToInt64(new byte[] { buffer[9], buffer[8], buffer[7], buffer[6], buffer[5], buffer[4], buffer[3], buffer[2] }, 0);
-                keyIndex = 10;
-                totalLength = dataLength + 14;
-            }
-
-            if (totalLength > length)
-                return "";
-
-            byte[] key = new byte[] { buffer[keyIndex], buffer[keyIndex + 1], buffer[keyIndex + 2], buffer[keyIndex + 3] };
-
-            int dataIndex = keyIndex + 4;
-            int count = 0;
-            for (int i = dataIndex; i < totalLength; i++)
-            {
-                buffer[i] = (byte)(buffer[i] ^ key[count % 4]);
-                count++;
-            }
-
-	        if (dataLength < 0 || dataIndex < 0)
-		        return "";
-
-            return Encoding.ASCII.GetString(buffer, dataIndex, dataLength);
-        }
-    }
+	}
 }

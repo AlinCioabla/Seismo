@@ -7,22 +7,14 @@ import { WebsocketService } from '../services/websocket.service';
   styleUrls: ['alerts.page.scss']
 })
 export class AlertsPage {
-  constructor(public websocketService: WebsocketService) {
-    this.websocketService.listen().subscribe(newMessage => {
-      console.log(newMessage);
-    })
+  constructor(public wsService: WebsocketService) {
   }
 
   public onConnect() {
-    this.websocketService.connectWebsocket();
+    this.wsService.connectWebsocket();
   }
 
   public onDisconnect() {
-    this.websocketService.disconnectWebsocket();
+    this.wsService.disconnectWebsocket();
   }
-
-  public onSendMessage() {
-    this.websocketService.sendMessage('alinnn');
-  }
-
 }

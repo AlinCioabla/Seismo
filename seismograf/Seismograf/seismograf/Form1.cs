@@ -19,10 +19,9 @@ namespace seismograf
         private void button1_Click(object sender, EventArgs e)
         {
             label4.Text = "Waiting for a client.";
-            TcpListener server = new TcpListener(IPAddress.Parse("127.0.0.1"), 80);
+            TcpListener server = new TcpListener(IPAddress.Parse("192.168.43.5"), 80);
 
             server.Start();
-            label4.Text = "Server has started on 127.0.0.1:80.{0}Waiting for a connection...";
 
             client = server.AcceptTcpClient();
 
@@ -117,7 +116,7 @@ namespace seismograf
             }
 
             if (totalLength > length)
-                throw new Exception("The buffer length is small than the data length");
+                return "";
 
             byte[] key = new byte[] { buffer[keyIndex], buffer[keyIndex + 1], buffer[keyIndex + 2], buffer[keyIndex + 3] };
 
@@ -128,6 +127,9 @@ namespace seismograf
                 buffer[i] = (byte)(buffer[i] ^ key[count % 4]);
                 count++;
             }
+
+	        if (dataLength < 0 || dataIndex < 0)
+		        return "";
 
             return Encoding.ASCII.GetString(buffer, dataIndex, dataLength);
         }

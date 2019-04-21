@@ -21,8 +21,12 @@ export class AlertsService {
   }
 
   public onChartDataUpdated(axis: Axis, chartData: Array<[number, number]>, timeInterval: number, updateFrequency: number) {
-    if (this.wsService.connected())
-      this.wsService.sendMessage(JSON.stringify(new WsMessage(axis, chartData, timeInterval, updateFrequency)));
+    if (this.wsService.connected()) {
+      const messageToSend = JSON.stringify(new WsMessage(axis, chartData, timeInterval, updateFrequency));
+      console.log('messageToSend');
+      this.wsService.sendMessage(messageToSend);
+
+    }
   }
 
   private onAccelerationChanged(newAcceleration: DeviceMotionAccelerationData) {
